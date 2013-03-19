@@ -129,6 +129,24 @@
 		}
 		
 		// age
+		set = set + "<br>Age: ";
+		if(data.birthday) {
+			var currentTime = new Date()
+			var month = currentTime.getMonth() + 1
+			var day = currentTime.getDate()
+			var year = currentTime.getFullYear()
+			//document.write(month + "/" + day + "/" + year)
+			
+			var year2 = data.birthday.substring(6);
+			var age = year - year2;
+			
+			if(parseInt(month) > parseInt(data.birthday.substring(0,2) ) )
+				age = age - 1;
+				
+			set = set + age;
+		} else {
+			set = set + "N/A";
+		}
 		
 		// address
 		set = set + "<br>Address: ";
