@@ -131,16 +131,18 @@
 		// age
 		set = set + "<br>Age: ";
 		if(data.birthday) {
-			var currentTime = new Date()
-			var month = currentTime.getMonth() + 1
-			var day = currentTime.getDate()
-			var year = currentTime.getFullYear()
+			// http://stackoverflow.com/questions/6002254/get-the-current-year-in-javascript
+			var currentTime = new Date();
+			var month = currentTime.getMonth() + 1;
+			var day = currentTime.getDate();
+			var year = currentTime.getFullYear();
 			//document.write(month + "/" + day + "/" + year)
 			
 			var year2 = data.birthday.substring(6);
 			var age = year - year2;
 			
-			if(parseInt(month) > parseInt(data.birthday.substring(0,2) ) )
+			//alert( parseInt(data.birthday.substring(0,2) ) );
+			if(parseInt(month) < parseInt(data.birthday.substring(0,2) ) )
 				age = age - 1;
 				
 			set = set + age;
@@ -153,7 +155,7 @@
 		if(!data.address) {
 			set = set + "N/A";
 		} else {
-			// address here
+			set = set + data["address"];
 		}
 		
 		// phone number
