@@ -1,0 +1,215 @@
+<html>
+	<head>
+		<script src="./jquery.js"
+				type="text/javascript">
+		</script>
+		<script src="./my_functions.js"
+				type="text/javascript">
+		</script>
+	</head>
+	<body>
+		<div 
+			id="Title">
+			<h1>My App</h1>
+		</div>
+		<button id="my_button">Get</button>
+		<div 
+			id="content">
+			<b>Photos:</b>
+		</div>
+		<div 
+			id="basic">
+			<b>Basic:</b>
+		</div>
+		<div
+			id="social">
+		</div>
+		<div><b>Friends:</b>
+		<div
+			id="friends">
+		</div>
+		<div>
+			<b>Likes:</b>
+		</div>
+		<div 
+			id="likes">
+		</div>
+	</body>
+	<script>
+	// Get some data
+	
+	function showLikes(data) {
+		var i;
+		var set = "";
+		/*for(i = 0; i < data["likes"].length; i++) {
+			//$("#likes").append(data["likes"]["data"][i]["name"]);
+			set = set + " " + data["likes"]["data"]["0"]["name"];
+		}*/
+		$.each(data.likes.data, function(i,obj) {
+			if(i != 0)
+				set = set + ", " + obj["name"];
+			else
+				set = set + obj["name"];
+		});
+		$("#likes").text(set);
+		//console.log(set);
+	}
+	
+	function showFriends(data) {
+		var i;
+		var set = "";
+		$.each(data.friends.data, function(i,obj) {
+			if(i != 0)
+				set = set + ", " + obj["name"];
+			else
+				set = set + obj["name"];
+		});
+		$("#friends").text(set);
+		//console.log(set);
+	}
+	
+	var x = "data";
+	var access_token = "AAACEdEose0cBADE932sg1ofxseqDiFWWGq5HPCnKikZAVTHrMWIjGr8omaqwh3ZARbA3nMBhujV4jFZBfKz6Gq6R0ZCCaVBZB1aIR3W8FjQZDZD";
+	
+	// Render in application
+	$(document).ready(function() {
+		$("#my_button").click(function() {
+			var service_name = "https://graph.facebook.com/730335315?access_token=" + access_token 
+				+ "&fields=id,name,gender,age_range,email,languages,birthday,interests,religion,friends,likes,photos.limit(5),address,cover,events.limit(1),relationship_status";
+			$.getJSON(service_name, function(data) {
+				if(data.cover) {
+					$("#content").append("<img src=" + data["cover"]["source"] + "><br>");
+				} else {
+					$("#content").append("Cover: N/A<br>");
+				}
+					
+				if(data.photos) {
+					var i;
+					$.each(data.photos.data, function(i,obj) {
+						var pic = "<img src=" + obj["picture"] + ">";
+					
+						$("#content").append(pic);
+						$("#content").append(obj["from"]["name"]);
+					});
+				} else {
+					$("#content").append("Photos: N/A");
+				}
+				
+				var name = data["name"];
+				$("#Title").text(name);
+				
+				fillBasic(data);
+				showLikes(data);
+				showFriends(data);
+				fillSocial(data);
+				/*$.each(data.albums.data, function(i,obj) {
+					$("#selector").append('<option value="' + obj["name"] + '">' + obj["name"] + '</option>');
+				}*/
+			});
+		});
+	});
+	
+	function fillBasic(data) {
+		var i;
+		var set = "";
+		
+		/*$.each(data.friends.data, function(i,obj) {
+			if(i != 0)
+				set = set + ", " + obj["name"];
+			else
+				set = set + obj["name"];
+		});
+		$("#friends").text(set);*/
+		
+		// Gender
+		if(data["gender"] ) {
+			set = set + "<br>Gender: " + data["gender"];
+		} else {
+			set = set + "<br>Gender: N/A";
+		}
+		
+		// age
+		
+		// address
+		set = set + "<br>Address: ";
+		if(!data.address) {
+			set = set + "N/A";
+		} else {
+			// address here
+		}
+		
+		// phone number
+		set = set + "<br>Phone number: Disabled as an anti-spam measure: http://stackoverflow.com/questions/6563786/facebook-api-phone-numbers";
+		
+		// email address
+		set = set +"<br>Email: ";
+		if(data.email) {
+			set = set + data["email"];
+		} else {
+			set = set + "N/A";
+		}
+		
+		// Languages
+		set = set + "<br>Languages: ";
+		if(data.languages) {
+			$.each(data.languages,function(i,obj) {
+				set = set + obj["name"] + ", ";
+			});
+		} else {
+			set = set + "N/A";
+		}
+		
+		// birthday
+		set = set + "<br>Birthday: ";
+		if(data.birthday) {
+			set = set + data["birthday"];
+		} else {
+			set = set + "N/A";
+		}
+		
+		// interests
+		set = set + "<br>Interests: ";
+		if(data.interests) {
+			$.each(data.interests.data, function(i,obj) {
+				set = set + obj["name"] + ", ";
+			});
+		} else {
+			set = set + "N/A";
+		}
+		
+		//Religion
+		set = set + "<br>Religion: ";
+		if(data.religion) {
+			set = set + data["religion"];
+		} else {
+			set = set + "N/A";
+		}
+		
+		$("#basic").append(set);
+	}
+	
+	function fillSocial(data) {
+		var set = "<b>Social:</b><br>";
+		
+		// event
+		set = set + "Event: ";
+		if(data.events) {
+			$.each(data.events.data, function(i,obj) {
+				set = set + obj["name"];
+			});
+		} else {
+			set = set + "N/A";
+		}
+		
+		// relationship
+		set = set + "<br>Relationship Status: ";
+		if(data.relationship_status) {
+			set = set + data["relationship_status"];
+		} else {
+			set = set + "N/A";
+		}
+		
+		$("#social").append(set);
+	}
+	</script>
+</html>
